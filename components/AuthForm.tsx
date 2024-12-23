@@ -41,6 +41,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     setErrorMessage("");
+
     try {
       const user = await createAccount({
         fullName: values.fullName || "",
