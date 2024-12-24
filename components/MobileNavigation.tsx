@@ -98,6 +98,5 @@ const MobileNavigation = ({ fullName, email, avatar }: MobileNavProps) => {
       </Sheet>
     </header>
   );
-};
 
 export default MobileNavigation;
