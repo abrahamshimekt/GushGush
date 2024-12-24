@@ -1,3 +1,4 @@
+"use server";
 import React from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
@@ -10,12 +11,9 @@ const Header = () => {
       <Search />
       <div className="header-wrapper">
         <FileUploader />
-        <form
-          action={async () => {
-            await signOutUser();
-          }}
-        >
-          <Button type="button" className="sign-out-button">
+        <form action={signOutUser}>
+          <Button type="submit" className="sign-out-button">
+
             <Image
               src="/assets/icons/logout.svg"
               alt="logo"
