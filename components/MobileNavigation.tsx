@@ -104,5 +104,4 @@ const MobileNavigation = ({ fullName, email, avatar }: MobileNavProps) => {
     </header>
   );
 };
-
 export default MobileNavigation;
