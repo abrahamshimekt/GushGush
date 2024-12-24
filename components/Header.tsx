@@ -11,7 +11,7 @@ const Header = () => {
     <header className="header">
       <Search />
       <div className="header-wrapper">
-        <FileUploader />
+        <FileUploader ownerId={""} accountId={""} className={""} />
         <form action={signOutUser}>
           <Button type="submit" className="sign-out-button">
             <Image
