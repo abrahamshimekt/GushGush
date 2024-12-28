@@ -52,7 +52,6 @@ export const uploadFiles = async ({
     handleError(error, "failed to upload");
   }
 };
-
 const createQueries = (currentUser: Models.Document) => {
   const queries = [
     Query.or([
