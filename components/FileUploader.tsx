@@ -5,39 +5,73 @@ import { Button } from "./ui/button";
 import { cn, convertFileToUrl, getFileType } from "@/lib/utils";
 import Image from "next/image";
 import Thumbnail from "./Thumbnail";
+import { MAX_FILE_SIZE } from "@/constants";
+import { useToast } from "@/hooks/use-toast";
+import { uploadFiles } from "@/lib/actions/file.actions";
+import { usePathname } from "next/navigation";
 interface Props {
   ownerId: string;
   accountId: string;
   className: string;
 }
 const FileUploader = ({ ownerId, accountId, className }: Props) => {
+  const path = usePathname();
   const [files, setFiles] = useState<File[]>([]);
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    setFiles(acceptedFiles);
-    // Do something with the files
-  }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { toast } = useToast();
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      setFiles(acceptedFiles);
+      const uploadPromises = acceptedFiles.map(async (file) => {
+        if (file.size > MAX_FILE_SIZE) {
+          setFiles((prevFiles) =>
+            prevFiles.filter((f) => f.name !== file.name)
+          );
+          return toast({
+            description: (
+              <p className="body-2 text-white">
+                <span className="font-semibold">{file.name}</span>
+                is to large. Max file size is 100MB
+              </p>
+            ),
+            className: "error-toast",
+          });
+        }
+        return uploadFiles({ file, ownerId, accountId, path }).then(
+          (uploadedFile) => {
+            if (uploadedFile) {
+              setFiles((prevFiles) =>
+                prevFiles.filter((f) => f.name !== file.name)
+              );
+            }
+          }
+        );
+      });
+
+      await Promise.all(uploadPromises);
+    },
+    [ownerId, accountId, path]
+  );
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
   const handleRemoveFile = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>,
     name: string
   ) => {
-    e.preventDefault();
+
+    e.stopPropagation();
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== name));
   };
   return (
-    <div>
-      <div {...getRootProps()} className="cursor-pointer">
-        <input {...getInputProps()} />
-        <Button type="button" className={cn("uploader-button", className)}>
-          <Image
-            src="/assets/icons/upload.svg"
-            alt="upload"
-            width={24}
-            height={24}
-          />
-          <p>Upload</p>
-        </Button>
-      </div>
+    <div {...getRootProps()} className="cursor-pointer">
+      <input {...getInputProps()} />
+      <Button type="button" className={cn("uploader-button", className)}>
+        <Image
+          src="/assets/icons/upload.svg"
+          alt="upload"
+          width={24}
+          height={24}
+        />
+        <p>Upload</p>
+      </Button>
       {files.length > 0 && (
         <ul className="uploader-preview-list">
           <h4 className="h4 text-light-100">Uploading</h4>
