@@ -5,7 +5,6 @@ import Thumbnail from "./Thumbnail";
 import FormattedDateTime from "./FormattedDateTime";
 import { convertFileSize } from "@/lib/utils";
 import ActionDropdown from "./ActionDropdown";
-
 const Card = ({ file }: { file: Models.Document }) => {
   return (
     <Link href={file.url} target="_blank" className="file-card">
