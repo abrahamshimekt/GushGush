@@ -16,11 +16,19 @@ import FileUploader from "./FileUploader";
 import { Button } from "./ui/button";
 import { signOutUser } from "@/lib/actions/user.actions";
 interface MobileNavProps {
+  $id: string;
+  accountId: string;
   fullName: string;
   email: string;
   avatar: string;
 }
-const MobileNavigation = ({ fullName, email, avatar }: MobileNavProps) => {
+const MobileNavigation = ({
+  $id: ownerId,
+  accountId,
+  fullName,
+  email,
+  avatar,
+}: MobileNavProps) => {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   return (
@@ -83,7 +91,11 @@ const MobileNavigation = ({ fullName, email, avatar }: MobileNavProps) => {
           </nav>
           <Separator className="my-5 bg-light-200/20" />
           <div className="flex flex-col justify-between gap-5 pb-5">
-            <FileUploader ownerId={""} accountId={""} className={""} />
+            <FileUploader
+              ownerId={ownerId}
+              accountId={accountId}
+              className={""}
+            />
             <Button
               type="button"
               className="mobile-sign-out-button"
