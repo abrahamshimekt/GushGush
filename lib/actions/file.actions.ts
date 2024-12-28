@@ -96,3 +96,45 @@ export const renameFile = async ({
   revalidatePath(path);
   return parseStringify(updatedFile);
 };
+
+export const updateFileUsers = async ({
+  fileId,
+  emails,
+  path,
+  actionType,
+}: UpdateFileUsersProps) => {
+  const { databases } = await createAdminClient();
+  let updatedFile;
+  if (actionType === "remove") {
+    updatedFile = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      fileId,
+      {
+        users: emails,
+      }
+    );
+  } else {
+    const document = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      fileId
+    );
+
+    // Get the existing users and combine with new emails
+    const existingUsers = document.users || [];
+    const updatedUsers = [...new Set([...existingUsers, ...emails])];
+
+    // Update the document with the merged users array
+    updatedFile = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      fileId,
+      {
+        users: updatedUsers,
+      }
+    );
+  }
+  revalidatePath(path);
+  return parseStringify(updatedFile);
+};
