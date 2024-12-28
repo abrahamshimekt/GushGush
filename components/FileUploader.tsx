@@ -9,7 +9,6 @@ import { MAX_FILE_SIZE } from "@/constants";
 import { useToast } from "@/hooks/use-toast";
 import { uploadFiles } from "@/lib/actions/file.actions";
 import { usePathname } from "next/navigation";
-
 interface Props {
   ownerId: string;
   accountId: string;
@@ -72,7 +71,6 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
         />
         <p>Upload</p>
       </Button>
-
       {files.length > 0 && (
         <ul className="uploader-preview-list">
           <h4 className="h4 text-light-100">Uploading</h4>

@@ -5,7 +5,6 @@ import Image from "next/image";
 import Search from "./Search";
 import FileUploader from "./FileUploader";
 import { signOutUser } from "@/lib/actions/user.actions";
-
 const Header = ({ownerId,accountId}:{ownerId:string,accountId:string}) => {
   return (
     <header className="header">
