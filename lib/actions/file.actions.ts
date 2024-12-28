@@ -79,3 +79,21 @@ export const getFiles = async () => {
     console.log(error);
   }
 };
+
+export const renameFile = async ({
+  fileId,
+  name,
+  extension,
+  path,
+}: RenameFileProps) => {
+  const { databases } = await createAdminClient();
+  const newName = `${name}.${extension}`;
+  const updatedFile = await databases.updateDocument(
+    appwriteConfig.databaseId,
+    appwriteConfig.filesCollectionId,
+    fileId,
+    { name: newName }
+  );
+  revalidatePath(path);
+  return parseStringify(updatedFile);
+};
