@@ -116,5 +116,4 @@ const MobileNavigation = ({
     </header>
   );
 };
-
 export default MobileNavigation;
