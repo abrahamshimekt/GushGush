@@ -1,6 +1,7 @@
 import Card from "@/components/Card";
 import Sort from "@/components/Sort";
 import { getFiles } from "@/lib/actions/file.actions";
+import { getCurrentUser } from "@/lib/actions/user.actions";
 import { Models } from "node-appwrite";
 import React, { use } from "react";
 
@@ -11,6 +12,7 @@ const Page = ({
 }) => {
   const { type } = use(searchParams);
   const files = use(getFiles());
+  const currentUser = use(getCurrentUser());
   return (
     <div className="page-container">
       <section className="w-full">
@@ -28,7 +30,7 @@ const Page = ({
       {files.total > 0 ? (
         <section className="file-list">
           {files.documents.map((file: Models.Document) => (
-            <Card key={file.$id} file={file}/>
+            <Card key={file.$id} file={file} currentUserEmail={currentUser.email} />
           ))}
         </section>
       ) : (
