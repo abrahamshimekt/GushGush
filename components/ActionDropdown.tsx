@@ -23,10 +23,20 @@ import Link from "next/link";
 import { constructDownloadUrl } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { renameFile, updateFileUsers } from "@/lib/actions/file.actions";
+import {
+  deleteFile,
+  renameFile,
+  updateFileUsers,
+} from "@/lib/actions/file.actions";
 import { usePathname } from "next/navigation";
 import { FileDetails, ShareInput } from "./ActionsModalContent";
-const ActionDropdown = ({ file ,currentUserEmail}: { file: Models.Document,currentUserEmail:string }) => {
+const ActionDropdown = ({
+  file,
+  currentUserEmail,
+}: {
+  file: Models.Document;
+  currentUserEmail: string;
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [action, setAction] = useState<ActionType>();
@@ -36,12 +46,12 @@ const ActionDropdown = ({ file ,currentUserEmail}: { file: Models.Document,curre
   const [isLoading, setIsLoading] = useState(false);
   const isCurrentUserFileOwner = currentUserEmail === file?.owner?.email;
   const handleRemoveUser = async (email: string) => {
-    const updatedEmails = file.users.filter((e:string) => e !== email);
+    const updatedEmails = file.users.filter((e: string) => e !== email);
     const success = await updateFileUsers({
       fileId: file.$id,
       emails: updatedEmails,
       path,
-      actionType:"remove"
+      actionType: "remove",
     });
     if (success) setEmails(updatedEmails);
     closeAllModals();
@@ -54,7 +64,8 @@ const ActionDropdown = ({ file ,currentUserEmail}: { file: Models.Document,curre
       rename: () =>
         renameFile({ fileId: file.$id, name, extension: file.extension, path }),
       share: () => updateFileUsers({ fileId: file.$id, emails, path }),
-      delete: () => console.log("delete"),
+      delete: () =>
+        deleteFile({ fileId: file.$id, path, bucketFileId: file.bucketFileId }),
     };
     success = await actions[action.value as keyof typeof actions]();
     if (success) return closeAllModals();
@@ -91,6 +102,12 @@ const ActionDropdown = ({ file ,currentUserEmail}: { file: Models.Document,curre
               onRemove={handleRemoveUser}
               isCurrentUserFileOwner={isCurrentUserFileOwner}
             />
+          )}
+          {value === "delete" && (
+            <p className="delete-confirmation">
+              Are you sure you want to delete{" "}
+              <span className="delete-file-name">{file.name}?</span>
+            </p>
           )}
         </DialogHeader>
         {["rename", "delete", "share"].includes(value) && (
@@ -162,13 +179,20 @@ const ActionDropdown = ({ file ,currentUserEmail}: { file: Models.Document,curre
                 </Link>
               ) : (
                 <div className="flex items-center gap-2">
-                  <Image
-                    src={actionItem.icon}
-                    alt={actionItem.label}
-                    width={30}
-                    height={30}
-                  />
-                  {actionItem.label}
+                  {(actionItem.value === "delete" && !isCurrentUserFileOwner) ||
+                  (actionItem.value === "rename" && !isCurrentUserFileOwner) ? (
+                    <></>
+                  ) : (
+                    <>
+                      <Image
+                        src={actionItem.icon}
+                        alt={actionItem.label}
+                        width={30}
+                        height={30}
+                      />
+                      {actionItem.label}
+                    </>
+                  )}
                 </div>
               )}
             </DropdownMenuItem>
