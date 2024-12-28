@@ -56,7 +56,6 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
     e: React.MouseEvent<HTMLImageElement, MouseEvent>,
     name: string
   ) => {
-
     e.stopPropagation();
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== name));
   };
