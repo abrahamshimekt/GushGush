@@ -8,7 +8,6 @@ import { Models } from "node-appwrite";
 import Thumbnail from "./Thumbnail";
 import FormattedDateTime from "./FormattedDateTime";
 import { useDebounce } from "use-debounce";
-
 const Search = () => {
   const [query, setQuery] = useState("");
   const searchParams = useSearchParams();
