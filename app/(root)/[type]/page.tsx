@@ -4,20 +4,13 @@ import { getFiles } from "@/lib/actions/file.actions";
 import { getCurrentUser } from "@/lib/actions/user.actions";
 import { getFileTypesParams } from "@/lib/utils";
 import { Models } from "node-appwrite";
-import React, { use } from "react";
-
-const Page = ({
-  searchParams,
-  params,
-}: {
-  params: Promise<{ type: string }>;
-  searchParams: Promise<{ searchText: string; sort: string }>;
-}) => {
-  const { type } = use(params);
-  const {searchText,sort} = use(searchParams);
+const Page = async ({ searchParams, params }: SearchParamProps) => {
+  const type = ((await params).type as string) || "";
+  const searchText = ((await searchParams)?.query as string) || "";
+  const sort = ((await searchParams)?.sort as string) || "";
   const types = getFileTypesParams(type) as FileType[];
-  const files = use(getFiles({ types ,searchText,sort}));
-  const currentUser = use(getCurrentUser());
+  const files = await getFiles({ types, searchText, sort });
+  const currentUser = await getCurrentUser();
   return (
     <div className="page-container">
       <section className="w-full">
